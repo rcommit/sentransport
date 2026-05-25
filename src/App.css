@@ -37,3 +37,19 @@
     margin-right: 12px;
   }
 }
+.aucune-ligne {
+  text-align: center;
+  color: #e74c3c;
+  font-size: 1.1rem;
+  padding: 30px;
+  background-color: #fff5f5;
+  border-radius: 8px;
+  border: 2px dashed #e74c3c;
+}
+.compteur-recherche {
+  text-align: center;
+  color: #0a6e31;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+  font-style: italic;
+}

@@ -9,6 +9,7 @@ import Footer from "./Footer";
 function App() {
   const [recherche, setRecherche] = useState("");
   const [ligneSelectionnee, setLigneSelectionnee] = useState(null);
+  const [nombreRecherches, setNombreRecherches] = useState(0);
 
   const lignes = [
     {
@@ -208,26 +209,47 @@ function App() {
     <div className="App">
       <Header />
       <main className="contenu">
-        <Recherche valeur={recherche} onChange={setRecherche} />
+        <Recherche
+          valeur={recherche}
+          onChange={(valeur) => {
+            setRecherche(valeur);
+          }}
+          onSearch={() => {
+            if (recherche !== "") {
+              setNombreRecherches(nombreRecherches + 1);
+            }
+          }}
+        />
+        <p className="compteur-recherche">
+          Vous avez effectué {nombreRecherches} recherche(s)
+        </p>
         <p className="resultat-recherche">
           {lignesFiltrees.length} ligne{lignesFiltrees.length > 1 ? "s" : ""}{" "}
           trouvée{lignesFiltrees.length > 1 ? "s" : ""}
         </p>
-        {lignesFiltrees.map((ligne) => (
-          <LigneBus
-            key={ligne.id}
-            numero={ligne.numero}
-            depart={ligne.depart}
-            arrivee={ligne.arrivee}
-            arrets={ligne.arrets}
-            couleur={ligne.couleur}
-            estSelectionnee={
-              ligneSelectionnee && ligneSelectionnee.id === ligne.id
-            }
-            onClick={() => handleClickLigne(ligne)}
-          />
-        ))}
-        {ligneSelectionnee && <DetailLigne ligne={ligneSelectionnee} />}
+
+        {lignesFiltrees.length === 0 ? (
+          <p className="aucune-ligne">Aucune ligne trouvée</p>
+        ) : (
+          lignesFiltrees.map((ligne) => (
+            <div key={ligne.id}>
+              <LigneBus
+                numero={ligne.numero}
+                depart={ligne.depart}
+                arrivee={ligne.arrivee}
+                arrets={ligne.arrets}
+                couleur={ligne.couleur}
+                estSelectionnee={
+                  ligneSelectionnee && ligneSelectionnee.id === ligne.id
+                }
+                onClick={() => handleClickLigne(ligne)}
+              />
+              {ligneSelectionnee && ligneSelectionnee.id === ligne.id && (
+                <DetailLigne ligne={ligne} />
+              )}
+            </div>
+          ))
+        )}
       </main>
       <Footer />
     </div>

@@ -1,3 +1,4 @@
+import "./Statistique.css";
 function Statistique1() {
   return (
     <div className="statistique">
