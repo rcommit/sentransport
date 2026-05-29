@@ -5,15 +5,18 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Charger les donnees depuis le fichier JSON
+# Charger les données
 with open("lignes_ddd.json", "r") as f:
     lignes = json.load(f)
+
+with open("arrets.json", "r") as f:
+    arrets = json.load(f)  # ← Remonté ici, AVANT app.run()
 
 @app.route("/")
 def accueil():
     return jsonify({
         "message": "Bienvenue sur l'API SenTransport !",
-        "endpoints": ["/lignes", "/lignes/<id>"]
+        "endpoints": ["/lignes", "/lignes/<id>", "/arrets"]
     })
 
 @app.route("/lignes")
@@ -22,15 +25,13 @@ def get_lignes():
 
 @app.route("/arrets")
 def get_arrets():
-    arrets = set(arret for ligne in lignes for arret in ligne["listeArrets"])
-    return jsonify(sorted(list(arrets)))
-
+    return jsonify(arrets)  
+    
 @app.route("/stats")
 def get_stats():
     total_lignes = len(lignes)
     total_arrets = sum(ligne["arrets"] for ligne in lignes)
     ligne_max = max(lignes, key=lambda l: l["arrets"])
-    
     return jsonify({
         "total_lignes": total_lignes,
         "total_arrets": total_arrets,
@@ -44,10 +45,7 @@ def get_stats():
 
 @app.route("/lignes/<int:ligne_id>")
 def get_ligne(ligne_id):
-    ligne = next(
-        (l for l in lignes if l["id"] == ligne_id),
-        None
-    )
+    ligne = next((l for l in lignes if l["id"] == ligne_id), None)
     if ligne is None:
         return jsonify({"erreur": "Ligne non trouvee"}), 404
     return jsonify(ligne)
@@ -66,4 +64,4 @@ def recherche_lignes():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000)  # ← Toujours en dernier
